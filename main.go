@@ -115,9 +115,12 @@ func weatherHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(responseData)
 }
 
+func health(w http.ResponseWriter, r *http.Request) { w.Write([]byte("Healthy")) }
+
 func main() {
 	// Define the handler for the /weather endpoint
 	http.HandleFunc("/weather", weatherHandler)
+	http.HandleFunc("/health", health)
 
 	// Start the HTTP server
 	port := ":8080"
