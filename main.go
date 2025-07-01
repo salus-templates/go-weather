@@ -61,11 +61,11 @@ func getResponseStatusCode() int {
 	// Randomly decide the type of response: 2xx, 4xx, or 5xx
 	// Adjust weights if needed, e.g., 60% 2xx, 20% 4xx, 20% 5xx
 	randomNumber := r.Intn(100) // 0-99
-	if randomNumber < 80 {      // 80% chance for 2xx
+	if randomNumber < 70 {      // 70% chance for 2xx
 		return statusCodes2xx[r.Intn(len(statusCodes2xx))]
-	} else if randomNumber < 90 { // 10% chance for 4xx (80-89)
+	} else if randomNumber < 85 { // 15% chance for 4xx (80-89)
 		return statusCodes4xx[r.Intn(len(statusCodes4xx))]
-	} else { // 10% chance for 5xx (90-99)
+	} else { // 15% chance for 5xx (90-99)
 		return statusCodes5xx[r.Intn(len(statusCodes5xx))]
 	}
 }
