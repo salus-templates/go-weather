@@ -59,7 +59,7 @@ func getResponseStatusCode() int {
 	statusCodes5xx := []int{http.StatusInternalServerError, http.StatusNotImplemented, http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusGatewayTimeout}
 
 	// Randomly decide the type of response: 2xx, 4xx, or 5xx
-	// Adjust weights if needed, e.g., 60% 2xx, 20% 4xx, 20% 5xx
+	// Adjust weights if needed, e.g., 70% 2xx, 15% 4xx, 15% 5xx
 	randomNumber := r.Intn(100) // 0-99
 	if randomNumber < 70 {      // 70% chance for 2xx
 		return statusCodes2xx[r.Intn(len(statusCodes2xx))]
@@ -71,7 +71,8 @@ func getResponseStatusCode() int {
 }
 
 // weatherHandler handles requests to the /weather endpoint.
-func weatherHandler(w http.ResponseWriter, req *http.Request) {
+// It now takes a Sleeper interface for dependency injection.
+func weatherHandler(s Sleeper, w http.ResponseWriter, req *http.Request) {
 	// Set Content-Type header to application/json
 	w.Header().Set("Content-Type", "application/json")
 
@@ -83,10 +84,10 @@ func weatherHandler(w http.ResponseWriter, req *http.Request) {
 		size = 10 // Default size
 	}
 
-	// Introduce a random delay between 0 and 5 seconds
+	// Introduce a random delay between 0 and 5 seconds using the injected Sleeper.
 	delay := time.Duration(r.Intn(5001)) * time.Millisecond // 0 to 5000 milliseconds
 	log.Printf("Introducing a delay of %v for this request.", delay)
-	time.Sleep(delay)
+	s.Sleep(delay) // Use the injected sleeper
 
 	// Get a random status code
 	statusCode := getResponseStatusCode()
@@ -118,8 +119,13 @@ func weatherHandler(w http.ResponseWriter, req *http.Request) {
 func health(w http.ResponseWriter, r *http.Request) { w.Write([]byte("Healthy")) }
 
 func main() {
-	// Define the handler for the /weather endpoint
-	http.HandleFunc("/weather", weatherHandler)
+	// Create an instance of RealSleeper for the main application.
+	sleeper := &DefaultSleeper{}
+
+	// Define the handler for the /weather endpoint, injecting the realSleeper.
+	http.HandleFunc("/weather", func(w http.ResponseWriter, req *http.Request) {
+		weatherHandler(sleeper, w, req)
+	})
 	http.HandleFunc("/health", health)
 
 	// Start the HTTP server
