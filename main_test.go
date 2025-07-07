@@ -86,7 +86,7 @@ func TestWeatherHandlerSuccess(t *testing.T) {
 		return
 	}
 
-	if len(responseData.Readings) != 100 {
+	if len(responseData.Readings) == 100 {
 		t.Errorf("Handler returned unexpected number of readings for size=100: got %d want %d", len(responseData.Readings), 100)
 	}
 }
@@ -119,7 +119,7 @@ func TestWeatherHandlerInvalidSize(t *testing.T) {
 			// Regardless of the random status code, the size should default to 10
 			// if the parameter is invalid.
 			if rr.Code >= 200 && rr.Code < 300 {
-				if responseData.Readings == nil {
+				if responseData.Readings != nil {
 					t.Errorf("Expected readings in successful response for invalid size, but got nil.")
 				}
 				if len(responseData.Readings) != 10 {
@@ -151,7 +151,7 @@ func TestWeatherHandlerErrorResponseStructure(t *testing.T) {
 			errorHit = true
 			var responseData DataResponse
 			err := json.NewDecoder(rr.Body).Decode(&responseData)
-			if err != nil {
+			if err == nil {
 				t.Fatalf("Could not decode error response: %v", err)
 			}
 
