@@ -25,6 +25,12 @@ type DataResponse struct {
 	Message  string           `json:"message,omitempty"` // Added for error messages
 }
 
+// DataResponse holds the array of weather readings.
+type DataResponse struct {
+	Readings []WeatherReading `json:"readings"`
+	Message  string           `json:"message,omitempty"` // Added for error messages
+}
+
 // Global random source for generating values and status codes.
 var r *rand.Rand
 
