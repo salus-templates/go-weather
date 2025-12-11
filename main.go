@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -128,8 +129,16 @@ func main() {
 	})
 	http.HandleFunc("/health", health)
 
+	// Optionally read AUTHOR environment variable
+	var author = os.Getenv("AUTHOR")
+
 	// Start the HTTP server
 	port := ":8080"
 	log.Printf("Starting Go REST API server on port %s", port)
+
+	if author != "" {
+		log.Printf("Author: %s", author)
+	}
+
 	log.Fatal(http.ListenAndServe(port, nil))
 }
