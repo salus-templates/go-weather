@@ -92,6 +92,8 @@ func weatherHandler(s Sleeper, w http.ResponseWriter, req *http.Request) {
 
 	// Get a random status code
 	statusCode := getResponseStatusCode()
+	log.Printf("Responding with status code: %d", statusCode)
+
 	w.WriteHeader(statusCode)
 
 	var responseData DataResponse
