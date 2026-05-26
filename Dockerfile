@@ -20,11 +20,13 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o go-weather .
 # Stage 2: Runner
 FROM alpine:latest
 
-# Set the working directory inside the container
-WORKDIR /root/
+WORKDIR /app
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/go-weather .
+
+# Run as the built-in unprivileged 'nobody' user (UID/GID 65534)
+USER nobody:nobody
 
 # Expose the port the application listens on
 EXPOSE 8080
