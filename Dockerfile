@@ -25,10 +25,8 @@ WORKDIR /app
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/go-weather .
 
-# Run as the built-in unprivileged 'nobody' user.
-# Use numeric UID/GID so Kubernetes' runAsNonRoot check can verify it
-# without resolving names against the image's /etc/passwd.
-USER 65534:65534
+# Run as the built-in unprivileged 'nobody' user (UID/GID 65534)
+USER nobody:nobody
 
 # Expose the port the application listens on
 EXPOSE 8080
