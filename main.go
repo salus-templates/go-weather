@@ -136,7 +136,7 @@ func main() {
 
 	// Start the HTTP server
 	port := ":8080"
-	log.Printf("Starting Go REST API server on port %s", port)
+	log.Printf("Starting Go REST API server on port: %s", port)
 
 	if author != "" {
 		log.Printf("Author: %s", author)
